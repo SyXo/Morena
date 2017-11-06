@@ -1,0 +1,108 @@
+#!/bin/bash
+# Aggiungo repo multilib ed aggiorno
+sed -i 's/^#[[]multilib[]]/[multilib]\nInclude = \/etc\/pacman.d\/mirrorlist/' /etc/pacman.conf
+pacman -Syy
+pacman -Syu
+
+# Installo i programmi
+pacman -S owncloud-client   
+pacman -S gnome-tweak-tool
+pacman -S virtualbox virtualbox-host-modules-arch
+pacman -S transmission-gtk
+#pacman -S mesa lib32-mesa opengl-man-pages lib32-mesa-vdpau
+pacman -S steam
+pacman -S gedit
+pacman -S libreoffice
+pacman -S wget
+pacman -S openssh
+pacman -S exfat-utils
+pacman -S filezilla
+pacman -S okular
+yaourt -S --noconfirm winbox
+# configuro yaourt
+# L'USO DI MAKEPKG NON E' CONSENTITO DA ROOT, CAMBIA UTENTE
+wget https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz
+wget https://aur.archlinux.org/packages/yaourt/
+tar -xvf yaourt.tar.gz 
+tar -xvf package-query.tar.gz 
+cd package-query
+makepkg -s
+makepkg -i
+cd ..
+cd yaourt
+makepkg -s
+makepkg -i
+
+# installo programmi da yaourt
+yaourt --noconfirm -S nextcloud-client
+
+# Aggiungo personalizzazioni grafiche
+yaourt -S --noconfirm paper-icon-theme-git
+yaourt -S --noconfirm paper-gtk-theme-git #metterle in gnome tweak tool
+# aggiungere il triplo bottone e le estensioni
+
+# Configuro stampanti
+pacman -S libcups
+pacman -S cups ghostscript gsfonts avahi
+systemctl enable avahi-daemon
+systemctl enable org.cups.cupsd.socket
+pacman -S hplip system-config-printer
+
+
+# SISTEMO I DRIVER VIDEO
+pacman -S xorg-xrandr lib32-nvidia-utils
+
+echo 'Section "Module"
+    Load "modesetting"
+EndSection
+
+Section "Device"
+    Identifier "nvidia"
+    Driver "nvidia"
+    BusID "1:0:0"
+    Option "AllowEmptyInitialConfiguration"
+EndSection' >> /etc/X11/xorg.conf
+
+echo '[Desktop Entry]
+Type=Application
+Name=Optimus
+Exec=sh -c "xrandr --setprovideroutputsource modesetting NVIDIA-0; xrandr --auto"
+NoDisplay=true
+X-GNOME-Autostart-Phase=DisplayServer' >> /usr/share/gdm/greeter/autostart/optimus.desktop
+
+cp /usr/share/gdm/greeter/autostart/optimus.desktop /etc/xdg/autostart/optimus.desktop
+
+sed -i 's/^#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf
+# SISTEMO I DRIVER WIRELESS
+cd ~
+rm -r /lib/firmware/ath10k/QCA6174/
+wget https://github.com/kvalo/ath10k-firmware/archive/master.zip
+unzip master.zip
+sudo cp -r ath10k-firmware-master/QCA6174/ /lib/firmware/ath10k/
+cd /lib/firmware/ath10k/QCA6174/hw2.1/
+sudo mv firmware-5.bin_SW_RM.1.1.1-00157-QCARMSWPZ-1 firmware-5.bin
+cd /lib/firmware/ath10k/QCA6174/hw3.0/
+sudo mv firmware-4.bin_WLAN.RM.2.0-00180-QCARMSWPZ-1 firmware-4.bin
+cd ~
+rm master.zip
+rm -r ath10k-firmware-master/
+
+#copio le VM
+mount /dev/sda /mnt
+cp -r /mnt/VirtualBox\ VMs /home/groot/VirtualBox\ VMs
+vboxmanage registervm /home/groot/VirtualBox\ VMs/Arch/Arch.vbox
+vboxmanage registervm /home/groot/VirtualBox\ VMs/Windows/Windows.vbox
+
+#########################################
+#					#
+#		TO DO LIST		#
+#					#
+#########################################
+#https://extensions.gnome.org/extension/690/easyscreencast/
+#https://extensions.gnome.org/extension/1085/simple-net-speed/
+#https://extensions.gnome.org/extension/307/dash-to-dock/
+#https://extensions.gnome.org/extension/750/openweather/
+#https://extensions.gnome.org/extension/7/removable-drive-menu/
+#https://extensions.gnome.org/extension/55/media-player-indicator/
+
+#vboxmanage extpack install Scaricati/Oracle_VM_VirtualBox_Extension_Pack-5.2.0-118431.vbox-extpack 
