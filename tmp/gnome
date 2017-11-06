@@ -1,0 +1,7 @@
+#!/bin/bash
+pacman -S gnome-tweak-tool
+pacman -S transmission-gtk
+
+# Aggiungo personalizzazioni grafiche
+#yaourt -S --noconfirm paper-icon-theme-git #solo per gnome
+#yaourt -S --noconfirm paper-gtk-theme-git #solo per gnome
