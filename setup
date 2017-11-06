@@ -5,20 +5,20 @@ pacman -Syy
 pacman -Syu
 
 # Installo i programmi
-pacman -S owncloud-client   
-pacman -S gnome-tweak-tool
+#pacman -S owncloud-client   
+#pacman -S gnome-tweak-tool
 pacman -S virtualbox virtualbox-host-modules-arch
-pacman -S transmission-gtk
+#pacman -S transmission-gtk
 #pacman -S mesa lib32-mesa opengl-man-pages lib32-mesa-vdpau
-pacman -S steam
+pacman -S transmission-qt
+#pacman -S steam
 pacman -S gedit
 pacman -S libreoffice
 pacman -S wget
 pacman -S openssh
-pacman -S exfat-utils
+#pacman -S exfat-utils
 pacman -S filezilla
 pacman -S okular
-yaourt -S --noconfirm winbox
 # configuro yaourt
 # L'USO DI MAKEPKG NON E' CONSENTITO DA ROOT, CAMBIA UTENTE
 wget https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz
@@ -34,11 +34,12 @@ makepkg -s
 makepkg -i
 
 # installo programmi da yaourt
+yaourt -S --noconfirm winbox
 yaourt --noconfirm -S nextcloud-client
 
 # Aggiungo personalizzazioni grafiche
-yaourt -S --noconfirm paper-icon-theme-git
-yaourt -S --noconfirm paper-gtk-theme-git #metterle in gnome tweak tool
+#yaourt -S --noconfirm paper-icon-theme-git #solo per gnome
+#yaourt -S --noconfirm paper-gtk-theme-git #solo per gnome
 # aggiungere il triplo bottone e le estensioni
 
 # Configuro stampanti
@@ -48,9 +49,8 @@ systemctl enable avahi-daemon
 systemctl enable org.cups.cupsd.socket
 pacman -S hplip system-config-printer
 
-
 # SISTEMO I DRIVER VIDEO
-pacman -S xorg-xrandr lib32-nvidia-utils
+#pacman -S xorg-xrandr lib32-nvidia-utils
 
 echo 'Section "Module"
     Load "modesetting"
